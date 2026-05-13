@@ -31,6 +31,8 @@ class QuestionsController < ApplicationController
       system_prompt: call.system_prompt,
       user_prompt: call.user_prompt,
       retrieved_chunks: call.retrieved_chunks,
+      aux_cost_cents: call.aux_cost_cents.to_f,
+      aux_description: call.aux_description,
       status: "pending"
     )
   end

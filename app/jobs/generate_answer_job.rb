@@ -40,13 +40,15 @@ class GenerateAnswerJob < ApplicationJob
     total_ms = ((Time.current - started_at) * 1000).to_i
     ttft_ms = first_token_at ? ((first_token_at - started_at) * 1000).to_i : nil
 
+    sonnet_cost = AnthropicClient.estimate_cost_cents(
+      input_tokens: answer.input_tokens, output_tokens: answer.output_tokens
+    )
+
     answer.update!(
       content: full_text,
       ttft_ms: ttft_ms,
       total_ms: total_ms,
-      cost_cents: AnthropicClient.estimate_cost_cents(
-        input_tokens: answer.input_tokens, output_tokens: answer.output_tokens
-      ),
+      cost_cents: (sonnet_cost + answer.aux_cost_cents.to_f).round(4),
       status: "complete"
     )
 

@@ -17,21 +17,53 @@
                     required: true %>
 
     <fieldset class="strategy-picker">
-      <legend>RAG chunk library:</legend>
+      <legend>RAG strategy:</legend>
 
       <label class="strategy-option">
         <%= f.radio_button :rag_strategy, "fixed", checked: true %>
         <span class="strategy-label">
-          <strong>Fixed-length</strong>
-          <small>500-char windows with 100-char overlap, 655 chunks total. The "just chop it up" baseline.</small>
+          <strong>Fixed-length chunks</strong>
+          <small>500-char windows with 100-char overlap. The "just chop it up" baseline (655 chunks).</small>
         </span>
       </label>
 
       <label class="strategy-option">
         <%= f.radio_button :rag_strategy, "structured" %>
         <span class="strategy-label">
-          <strong>Structure-aware</strong>
-          <small>Split on rule (H3) headings, title prepended to each chunk, 223 chunks total.</small>
+          <strong>Structure-aware chunks</strong>
+          <small>Split on rule (H3) headings; title prepended to each chunk (223 chunks).</small>
+        </span>
+      </label>
+
+      <label class="strategy-option">
+        <%= f.radio_button :rag_strategy, "hybrid" %>
+        <span class="strategy-label">
+          <strong>Hybrid search</strong>
+          <small>Cosine + BM25 keyword search on structured chunks, merged with Reciprocal Rank Fusion.</small>
+        </span>
+      </label>
+
+      <label class="strategy-option">
+        <%= f.radio_button :rag_strategy, "rerank" %>
+        <span class="strategy-label">
+          <strong>Retrieve-then-rerank</strong>
+          <small>Pull cosine top-15, then Claude Haiku picks the best 3. Adds ~1-2s + a few cents.</small>
+        </span>
+      </label>
+
+      <label class="strategy-option">
+        <%= f.radio_button :rag_strategy, "hyde" %>
+        <span class="strategy-label">
+          <strong>HyDE (hypothetical answer)</strong>
+          <small>Ask Haiku for a confident hypothetical answer; embed THAT and search structured chunks.</small>
+        </span>
+      </label>
+
+      <label class="strategy-option">
+        <%= f.radio_button :rag_strategy, "large_embedding" %>
+        <span class="strategy-label">
+          <strong>Larger embedding model</strong>
+          <small>Same structure-aware chunks re-embedded with text-embedding-3-large (3072 dims, ~6× cost).</small>
         </span>
       </label>
     </fieldset>

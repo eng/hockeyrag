@@ -10,12 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_13_233646) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_13_235151) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
 
   create_table "answers", force: :cascade do |t|
+    t.decimal "aux_cost_cents", precision: 8, scale: 4, default: "0.0", null: false
+    t.string "aux_description"
     t.text "content", default: "", null: false
     t.decimal "cost_cents", precision: 8, scale: 4
     t.datetime "created_at", null: false
@@ -31,6 +33,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_13_233646) do
     t.datetime "updated_at", null: false
     t.text "user_prompt"
     t.index ["question_id"], name: "index_answers_on_question_id"
+  end
+
+  create_table "large_rule_chunks", force: :cascade do |t|
+    t.integer "chunk_index", null: false
+    t.text "content", null: false
+    t.datetime "created_at", null: false
+    t.vector "embedding", limit: 3072
+    t.string "rule_reference"
+    t.string "section"
+    t.string "title"
+    t.datetime "updated_at", null: false
+    t.index ["rule_reference"], name: "index_large_rule_chunks_on_rule_reference"
   end
 
   create_table "questions", force: :cascade do |t|
@@ -53,12 +67,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_13_233646) do
   create_table "structured_rule_chunks", force: :cascade do |t|
     t.integer "chunk_index", null: false
     t.text "content", null: false
+    t.virtual "content_tsv", type: :tsvector, as: "(setweight(to_tsvector('english'::regconfig, (COALESCE(title, ''::character varying))::text), 'A'::\"char\") || setweight(to_tsvector('english'::regconfig, COALESCE(content, ''::text)), 'B'::\"char\"))", stored: true
     t.datetime "created_at", null: false
     t.vector "embedding", limit: 1536
     t.string "rule_reference"
     t.string "section"
     t.string "title"
     t.datetime "updated_at", null: false
+    t.index ["content_tsv"], name: "index_structured_rule_chunks_on_content_tsv", using: :gin
     t.index ["embedding"], name: "index_structured_rule_chunks_on_embedding", opclass: :vector_cosine_ops, using: :hnsw
     t.index ["rule_reference"], name: "index_structured_rule_chunks_on_rule_reference"
   end

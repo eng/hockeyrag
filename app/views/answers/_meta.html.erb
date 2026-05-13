@@ -12,5 +12,9 @@
     <dt>Input tokens</dt>        <dd><%= number_with_delimiter(answer.input_tokens.to_i) %></dd>
     <dt>Output tokens</dt>       <dd><%= number_with_delimiter(answer.output_tokens.to_i) %></dd>
     <dt>Cost</dt>                <dd>¢<%= answer.cost_cents %></dd>
+    <% if answer.aux_cost_cents.to_f > 0 %>
+      <dt><small><%= answer.aux_description || "Aux retrieval" %></small></dt>
+      <dd><small>¢<%= answer.aux_cost_cents %> (already included)</small></dd>
+    <% end %>
   <% end %>
 </dl>
