@@ -1,0 +1,16 @@
+<dl class="metrics">
+  <% case answer.status %>
+  <% when "pending" %>
+    <dt>Status</dt><dd>queued…</dd>
+  <% when "streaming" %>
+    <dt>Status</dt><dd>streaming…</dd>
+  <% when "failed" %>
+    <dt>Status</dt><dd class="failed">failed</dd>
+  <% else %>
+    <dt>Time to first token</dt><dd><%= number_with_delimiter(answer.ttft_ms.to_i) %> ms</dd>
+    <dt>Total time</dt>          <dd><%= number_with_delimiter(answer.total_ms.to_i) %> ms</dd>
+    <dt>Input tokens</dt>        <dd><%= number_with_delimiter(answer.input_tokens.to_i) %></dd>
+    <dt>Output tokens</dt>       <dd><%= number_with_delimiter(answer.output_tokens.to_i) %></dd>
+    <dt>Cost</dt>                <dd>¢<%= answer.cost_cents %></dd>
+  <% end %>
+</dl>

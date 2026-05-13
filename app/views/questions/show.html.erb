@@ -1,0 +1,15 @@
+<% content_for :title, "Hockey Rules Q&A" %>
+
+<%= turbo_stream_from @question, "answers" %>
+
+<div class="page">
+  <h1>Hockey Rules Q&amp;A</h1>
+  <p class="question-text"><strong>Q:</strong> <%= @question.text %></p>
+  <p><%= link_to "← Ask another", new_question_path %></p>
+
+  <div class="three-panel">
+    <% @question.answers.order(:mode).each do |answer| %>
+      <%= render "answers/panel", answer: answer %>
+    <% end %>
+  </div>
+</div>

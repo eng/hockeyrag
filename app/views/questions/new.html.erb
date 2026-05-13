@@ -1,0 +1,31 @@
+<% content_for :title, "Hockey Rules Q&A" %>
+
+<div class="page">
+  <h1>Hockey Rules Q&amp;A — three approaches</h1>
+  <p class="lede">
+    Ask any question about the NHL rulebook. We'll answer it three ways
+    side-by-side: <strong>Naive</strong> (no rulebook), <strong>Brute Force</strong>
+    (the whole rulebook in the prompt), and <strong>RAG</strong>
+    (top-3 retrieved chunks). Watch timing, tokens, and cost for each.
+  </p>
+
+  <%= form_with model: @question, local: true, class: "ask-form" do |f| %>
+    <%= f.text_area :text,
+                    placeholder: "How long is a minor penalty?",
+                    rows: 3,
+                    autofocus: true,
+                    required: true %>
+    <button type="submit">Ask</button>
+  <% end %>
+
+  <h2>Try one of these:</h2>
+  <ul class="sample-questions">
+    <li>How long is a minor penalty?</li>
+    <li>What is the penalty for using a broken stick?</li>
+    <li>How big is the goal crease in metric units?</li>
+    <li>What's the difference between icing and offside?</li>
+    <li>Can a goalie score a goal?</li>
+    <li>Is it legal to use a baseball bat?</li>
+    <li>What does Rule 22.1 say?</li>
+  </ul>
+</div>
