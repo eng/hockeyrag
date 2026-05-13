@@ -1,8 +1,13 @@
-<% mode_explanations = {
-  "naive"       => "Just asks Claude with no rulebook context. Fast, cheap, often wrong on specifics.",
-  "brute_force" => "Stuffs the entire ~260KB rulebook into the prompt every time. Accurate but expensive.",
-  "rag"         => "Embeds the question, finds the top-3 nearest chunks via pgvector, sends only those."
-} %>
+<%
+  question ||= answer.question
+  rag_explanation = "Embeds the question, finds the top-3 nearest chunks via pgvector, sends only those. " \
+                    "Library: #{question.rag_strategy_label}."
+  mode_explanations = {
+    "naive"       => "Just asks Claude with no rulebook context. Fast, cheap, often wrong on specifics.",
+    "brute_force" => "Stuffs the entire ~260KB rulebook into the prompt every time. Accurate but expensive.",
+    "rag"         => rag_explanation
+  }
+%>
 
 <section class="panel panel-<%= answer.mode %>" id="answer_<%= answer.id %>">
   <header>
@@ -21,7 +26,7 @@
       <summary>Retrieved chunks (what got sent to the model)</summary>
       <% answer.retrieved_chunks.each do |chunk| %>
         <div class="chunk">
-          <strong><%= chunk["rule_reference"].presence || "Chunk #{chunk["chunk_index"]}" %></strong>
+          <strong><%= chunk["title"].presence || chunk["rule_reference"].presence || "Chunk #{chunk["chunk_index"]}" %></strong>
           <span class="similarity">similarity: <%= chunk["similarity"]&.round(2) %></span>
           <pre><%= chunk["content"] %></pre>
         </div>

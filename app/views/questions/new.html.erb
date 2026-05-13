@@ -15,6 +15,27 @@
                     rows: 3,
                     autofocus: true,
                     required: true %>
+
+    <fieldset class="strategy-picker">
+      <legend>RAG chunk library:</legend>
+
+      <label class="strategy-option">
+        <%= f.radio_button :rag_strategy, "fixed", checked: true %>
+        <span class="strategy-label">
+          <strong>Fixed-length</strong>
+          <small>500-char windows with 100-char overlap, 655 chunks total. The "just chop it up" baseline.</small>
+        </span>
+      </label>
+
+      <label class="strategy-option">
+        <%= f.radio_button :rag_strategy, "structured" %>
+        <span class="strategy-label">
+          <strong>Structure-aware</strong>
+          <small>Split on rule (H3) headings, title prepended to each chunk, 223 chunks total.</small>
+        </span>
+      </label>
+    </fieldset>
+
     <button type="submit">Ask</button>
   <% end %>
 

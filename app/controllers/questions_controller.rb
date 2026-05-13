@@ -4,11 +4,11 @@ class QuestionsController < ApplicationController
   end
 
   def create
-    @question = Question.create!(text: question_params[:text])
+    @question = Question.create!(question_params)
 
     build_answer(:naive,       NaiveAnswer.call(question: @question.text))
     build_answer(:brute_force, BruteForceAnswer.call(question: @question.text))
-    build_answer(:rag,         RagAnswer.call(question: @question.text))
+    build_answer(:rag,         RagAnswer.call(question: @question.text, strategy: @question.rag_strategy))
 
     @question.answers.each { |a| GenerateAnswerJob.perform_later(a.id) }
 
@@ -22,7 +22,7 @@ class QuestionsController < ApplicationController
   private
 
   def question_params
-    params.require(:question).permit(:text)
+    params.require(:question).permit(:text, :rag_strategy)
   end
 
   def build_answer(mode, call)
