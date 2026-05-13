@@ -1,10 +1,116 @@
-/*
- * This is a manifest file that'll be compiled into application.css.
- *
- * With Propshaft, assets are served efficiently without preprocessing steps. You can still include
- * application-wide styles in this file, but keep in mind that CSS precedence will follow the standard
- * cascading order, meaning styles declared later in the document or manifest will override earlier ones,
- * depending on specificity.
- *
- * Consider organizing styles into separate files for maintainability.
- */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  margin: 0;
+  background: #f8f9fb;
+  color: #1a1a1a;
+  line-height: 1.5;
+}
+
+.page { max-width: 1400px; margin: 0 auto; padding: 24px; }
+
+h1 { margin: 0 0 8px; font-size: 28px; }
+h2 { margin: 0 0 8px; font-size: 18px; }
+
+.lede { color: #555; margin: 0 0 24px; max-width: 760px; }
+
+.ask-form textarea {
+  width: 100%;
+  padding: 12px;
+  font: inherit;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  resize: vertical;
+}
+.ask-form button {
+  margin-top: 8px;
+  padding: 10px 20px;
+  font: inherit;
+  font-weight: 600;
+  background: #1a73e8;
+  color: white;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.ask-form button:hover { background: #155bb5; }
+
+.sample-questions { color: #555; padding-left: 20px; }
+.sample-questions li { margin: 4px 0; }
+
+.question-text {
+  background: #fff;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #e0e3e8;
+  margin: 16px 0;
+}
+
+.three-panel {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+@media (max-width: 1100px) {
+  .three-panel { grid-template-columns: 1fr; }
+}
+
+.panel {
+  background: #fff;
+  border: 1px solid #e0e3e8;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+}
+.panel-naive       { border-top: 4px solid #b91c1c; }
+.panel-brute_force { border-top: 4px solid #ca8a04; }
+.panel-rag         { border-top: 4px solid #15803d; }
+
+.panel header { margin-bottom: 8px; }
+.panel .explanation { color: #666; font-size: 13px; margin: 4px 0 16px; }
+
+.panel .body {
+  background: #fafafa;
+  padding: 12px;
+  border-radius: 6px;
+  white-space: pre-wrap;
+  min-height: 120px;
+  font-size: 14px;
+  margin-bottom: 12px;
+  border: 1px solid #ececec;
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 16px;
+  font-size: 13px;
+  margin: 0;
+}
+.metrics dt { color: #555; }
+.metrics dd { margin: 0; font-variant-numeric: tabular-nums; }
+.metrics .failed { color: #b91c1c; }
+
+.retrieved-chunks { margin-top: 16px; font-size: 13px; }
+.retrieved-chunks summary { cursor: pointer; color: #1a73e8; font-weight: 600; }
+.retrieved-chunks summary:hover { text-decoration: underline; }
+.retrieved-chunks .chunk {
+  margin-top: 8px;
+  padding: 8px 10px;
+  background: #f4f6f9;
+  border-radius: 4px;
+  border-left: 3px solid #15803d;
+}
+.retrieved-chunks .similarity { color: #666; margin-left: 8px; }
+.retrieved-chunks pre {
+  white-space: pre-wrap;
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: #333;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}
