@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_13_214647) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_13_221541) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -47,6 +47,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_13_214647) do
     t.string "rule_reference"
     t.datetime "updated_at", null: false
     t.index ["embedding"], name: "index_rule_chunks_on_embedding", opclass: :vector_cosine_ops, using: :hnsw
+  end
+
+  create_table "structured_rule_chunks", force: :cascade do |t|
+    t.integer "chunk_index", null: false
+    t.text "content", null: false
+    t.datetime "created_at", null: false
+    t.vector "embedding", limit: 1536
+    t.string "rule_reference"
+    t.string "section"
+    t.string "title"
+    t.datetime "updated_at", null: false
+    t.index ["embedding"], name: "index_structured_rule_chunks_on_embedding", opclass: :vector_cosine_ops, using: :hnsw
+    t.index ["rule_reference"], name: "index_structured_rule_chunks_on_rule_reference"
   end
 
   add_foreign_key "answers", "questions"
