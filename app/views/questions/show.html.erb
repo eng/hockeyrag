@@ -11,7 +11,7 @@
   <p><%= link_to "← Ask another", new_question_path %></p>
 
   <div class="three-panel">
-    <% @question.answers.order(:mode).each do |answer| %>
+    <% @question.answers.sort_by { |a| Answer::MODES.index(a.mode) }.each do |answer| %>
       <%= render "answers/panel", answer: answer, question: @question %>
     <% end %>
   </div>
