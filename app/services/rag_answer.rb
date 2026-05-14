@@ -5,7 +5,8 @@ class RagAnswer
     "hybrid"          => RagStrategies::Hybrid,
     "rerank"          => RagStrategies::Rerank,
     "hyde"            => RagStrategies::Hyde,
-    "large_embedding" => RagStrategies::LargeEmbedding
+    "large_embedding" => RagStrategies::LargeEmbedding,
+    "hybrid_rerank"   => RagStrategies::HybridRerank
   }.freeze
 
   def self.call(question:, strategy: "fixed")

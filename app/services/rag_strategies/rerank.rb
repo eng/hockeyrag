@@ -13,7 +13,7 @@ module RagStrategies
         .limit(CANDIDATES)
         .to_a
 
-      picks, cost = rerank_with_haiku(candidates)
+      picks, cost = self.class.rerank_chunks(candidates, @question)
       payload = picks.map { |c| normalize(c) }
 
       RetrievalResult.new(
@@ -23,11 +23,13 @@ module RagStrategies
       )
     end
 
-    private
-
-    def rerank_with_haiku(candidates)
+    # Class-level helper so composite strategies (e.g., HybridRerank) can reuse
+    # the rerank step without inheriting from Rerank.
+    # Returns [picked_chunks, aux_cost_cents].
+    def self.rerank_chunks(candidates, question)
       menu = candidates.each_with_index.map { |c, i|
-        "[#{i + 1}] #{c.title}\n#{c.content[0, 350]}"
+        title = c.respond_to?(:title) ? c.title : (c.rule_reference || "Chunk #{c.chunk_index}")
+        "[#{i + 1}] #{title}\n#{c.content[0, 350]}"
       }.join("\n\n")
 
       prompt = <<~PROMPT
@@ -36,7 +38,7 @@ module RagStrategies
         N is a candidate number from 1 to #{candidates.length}. Pick exactly
         the 3 most relevant in order of relevance.
 
-        Question: #{@question}
+        Question: #{question}
 
         Candidates:
         #{menu}

@@ -82,12 +82,30 @@ The top 3 by combined score win.
 
 ---
 
+## 7. Hybrid + Rerank (the composite, recommended for this domain)
+
+**What it does.** Stacks two of the techniques above. Hybrid (BM25 + cosine via RRF) pulls a candidate pool of 15 chunks. Then Claude Haiku reads all 15 and picks the best 3, just like the plain Rerank strategy. Result: the candidate pool is much smarter (catches keyword hits cosine missed AND semantic hits BM25 missed), and the final selection is much smarter (a small LLM judging real relevance, not just vector distance).
+
+**Why it's the right call for a rulebook.** Hockey rulebook questions split into two shapes:
+- **Conceptual:** "How long is a minor penalty?" — pure cosine handles these because the question's meaning aligns with rule body text.
+- **Citation-heavy:** "What does Rule 22.1 say?" — pure cosine fails because rule numbers don't embed usefully. BM25 nails them.
+
+A single strategy can't win both shapes. Hybrid+Rerank does: BM25 makes sure rule-number questions surface the right chunk in the candidate pool, then Haiku ensures conceptual questions get the actually-relevant chunk in the final 3 rather than a near-miss neighbor. On "What does Rule 22.1 say?" this strategy is the *only* one out of seven that retrieves Rule 22's actual content (everything else returns summary tables).
+
+**Implementation note.** Our BM25 query builds a tsquery that requires numeric tokens (like "22.1" or "42") and ORs the non-numeric words. This is important — naive BM25 with `plainto_tsquery` ANDs everything, so filler words like "say" in "What does Rule 22.1 *say*?" knock out the right chunk. Numeric-tokens-required + word-tokens-optional is a small heuristic that handles this without overfitting.
+
+**Why it fails.** Marginally for any question. The main failure mode is the same as plain Rerank: Haiku occasionally picks a chunk that *looks* relevant in its first 350 characters but trails off, missing the actual answer. Fixable by sending Haiku more characters per chunk (more cost) or by retrieving more candidates (more cost).
+
+**Cost.** Same as Rerank, since BM25 is a free Postgres index lookup. ~¢0.50/question.
+
+---
+
 ## A rough mental hierarchy
 
 Roughly increasing complexity and effectiveness:
 
 ```
-fixed  <  structured  <  hybrid  ≈  large_embedding  <  rerank  ≈  hyde
+fixed  <  structured  <  hybrid  ≈  large_embedding  <  rerank  ≈  hyde  <  hybrid_rerank
 ```
 
-In practice production systems stack several: structured chunks + hybrid + rerank is a common high-quality recipe. The demo lets you try each in isolation to develop intuition for which lever moves the needle on which question.
+In practice production systems stack several techniques. **Hybrid + Rerank is the standard recipe** for keyword-anchored domains like rulebooks, legal documents, API references, and policy manuals — anywhere users mix "tell me about X" questions with "what does section X.Y say" questions. The demo lets you try each technique in isolation to develop intuition for which lever moves the needle on which question, then graduate to the composite once you've internalized why each piece is there.

@@ -66,6 +66,14 @@
           <small>Same structure-aware chunks re-embedded with text-embedding-3-large (3072 dims, ~6× cost).</small>
         </span>
       </label>
+
+      <label class="strategy-option strategy-option-recommended">
+        <%= f.radio_button :rag_strategy, "hybrid_rerank" %>
+        <span class="strategy-label">
+          <strong>Hybrid + Rerank <span class="strategy-recommended-tag">★ recommended for rulebook</span></strong>
+          <small>Hybrid (BM25 + cosine) pulls 15 candidates; Claude Haiku picks the best 3. Handles citations AND concepts.</small>
+        </span>
+      </label>
     </fieldset>
 
     <button type="submit">Ask</button>
