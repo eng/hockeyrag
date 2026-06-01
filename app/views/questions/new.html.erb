@@ -1,6 +1,6 @@
 <% content_for :title, "Hockey Rules Q&A" %>
 
-<div class="page">
+<div class="page" data-controller="sample-question">
   <h1>Hockey Rules Q&amp;A — three approaches</h1>
   <p class="lede">
     Ask any question about the NHL rulebook. We'll answer it three ways
@@ -9,12 +9,14 @@
     (top-3 retrieved chunks). Watch timing, tokens, and cost for each.
   </p>
 
-  <%= form_with model: @question, local: true, class: "ask-form" do |f| %>
+  <%= form_with model: @question, local: true, class: "ask-form",
+                data: { sample_question_target: "form" } do |f| %>
     <%= f.text_area :text,
                     placeholder: "How long is a minor penalty?",
                     rows: 3,
                     autofocus: true,
-                    required: true %>
+                    required: true,
+                    data: { sample_question_target: "field" } %>
 
     <fieldset class="strategy-picker">
       <legend>RAG strategy:</legend>
@@ -81,12 +83,18 @@
 
   <h2>Try one of these:</h2>
   <ul class="sample-questions">
-    <li>How long is a minor penalty?</li>
-    <li>What is the penalty for using a broken stick?</li>
-    <li>How big is the goal crease in metric units?</li>
-    <li>What's the difference between icing and offside?</li>
-    <li>Can a goalie score a goal?</li>
-    <li>Is it legal to use a baseball bat?</li>
-    <li>What does Rule 22.1 say?</li>
+    <% [
+      "How long is a minor penalty?",
+      "How big is the goal crease?",
+      "What's the difference between icing and offside?",
+      "What does Rule 22.1 say?",
+    ].each do |sample| %>
+      <li>
+        <button type="button" class="sample-question-link"
+                data-action="click->sample-question#fill">
+          <%= sample %>
+        </button>
+      </li>
+    <% end %>
   </ul>
 </div>

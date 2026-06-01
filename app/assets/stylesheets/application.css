@@ -86,6 +86,17 @@ h2 { margin: 0 0 8px; font-size: 18px; }
 
 .sample-questions { color: #555; padding-left: 20px; }
 .sample-questions li { margin: 4px 0; }
+.sample-question-link {
+  background: none;
+  border: none;
+  padding: 0;
+  color: #2a66c8;
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+  text-decoration: underline;
+}
+.sample-question-link:hover { color: #1a4a9a; }
 
 .question-text {
   background: #fff;
